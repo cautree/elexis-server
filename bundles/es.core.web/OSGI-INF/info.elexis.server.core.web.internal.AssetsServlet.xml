@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="info.elexis.server.core.web.internal.AssetsServlet">
+   <property name="osgi.http.whiteboard.resource.pattern" value="/assets/*"/>
+   <property name="osgi.http.whiteboard.resource.prefix" value="/WEB-INF/assets"/>
+   <service>
+      <provide interface="info.elexis.server.core.web.internal.AssetsServlet"/>
+   </service>
+   <implementation class="info.elexis.server.core.web.internal.AssetsServlet"/>
+</scr:component>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="info.elexis.server.core.web.internal.ElexisServerSerlvetContext">
+   <property name="osgi.http.whiteboard.context.name" value="es"/>
+   <property name="osgi.http.whiteboard.context.path" value="/"/>
+   <service>
+      <provide interface="org.osgi.service.http.context.ServletContextHelper"/>
+   </service>
+   <implementation class="info.elexis.server.core.web.internal.ElexisServerSerlvetContext"/>
+</scr:component>

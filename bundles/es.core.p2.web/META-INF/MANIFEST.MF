@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Elexis-Server p2 Web Interface
+Bundle-SymbolicName: info.elexis.server.core.p2.web
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: elexis.info
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.osgi;bundle-version="3.11.2",
+ info.elexis.server.core.web;bundle-version="1.0.0",
+ info.elexis.server.core.p2;bundle-version="1.0.0"
+Import-Package: org.slf4j
+Service-Component: OSGI-INF/info.elexis.server.core.p2.web.rest.P2RestService.xml,
+ OSGI-INF/info.elexis.server.core.p2.web.P2AdminInterfaceContribution.xml
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: info.elexis.server.core.p2.web.internal.Activator
+Bundle-ClassPath: .
