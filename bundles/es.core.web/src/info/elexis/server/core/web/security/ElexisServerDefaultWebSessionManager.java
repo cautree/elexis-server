@@ -1,0 +1,29 @@
+package info.elexis.server.core.web.security;
+
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.SessionException;
+import org.apache.shiro.session.mgt.SessionContext;
+import org.apache.shiro.session.mgt.SessionKey;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.apache.shiro.web.session.mgt.WebSessionManager;
+
+public class ElexisServerDefaultWebSessionManager implements WebSessionManager {
+
+	private static DefaultWebSessionManager dwsm = new DefaultWebSessionManager();
+	
+	@Override
+	public Session start(SessionContext context) {
+		return dwsm.start(context);
+	}
+
+	@Override
+	public Session getSession(SessionKey key) throws SessionException {
+		return dwsm.getSession(key);
+	}
+
+	@Override
+	public boolean isServletContainerSessions() {
+		return dwsm.isServletContainerSessions();
+	}
+
+}

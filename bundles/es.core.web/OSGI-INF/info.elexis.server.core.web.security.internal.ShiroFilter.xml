@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="info.elexis.server.core.web.security.internal.ShiroFilter">
+   <property name="osgi.http.whiteboard.filter.pattern" value="/*"/>
+   <property name="osgi.http.whiteboard.filter.asyncSupported" value="true"/>
+   <property name="osgi.http.whiteboard.filter.dispatcher">REQUEST
+ASYNC
+FORWARD
+INCLUDE
+ERROR
+   </property>
+   <property name="osgi.http.whiteboard.context.select" value="(osgi.http.whiteboard.context.name=es)"/>
+   <service>
+      <provide interface="javax.servlet.Filter"/>
+   </service>
+   <reference bind="bind" cardinality="0..1" interface="info.elexis.server.core.web.security.internal.ShiroEnvironmentLoaderListener" policy="static" unbind="unbind"/>
+   <implementation class="info.elexis.server.core.web.security.internal.ShiroFilter"/>
+</scr:component>
