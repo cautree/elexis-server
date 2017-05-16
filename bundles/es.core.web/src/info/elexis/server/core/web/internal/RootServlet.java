@@ -52,7 +52,7 @@ public class RootServlet extends HttpServlet {
 		if ("/".equals(requestUri)) {
 			requestUri = "index.html";
 		}
-		
+
 		if("/favicon.ico".equals(requestUri)) {
 			resp.sendRedirect("/assets/favicon.ico");
 			return;
