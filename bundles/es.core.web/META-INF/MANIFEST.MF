@@ -15,9 +15,8 @@ Require-Bundle: org.eclipse.osgi,
  org.secnod.shiro.jersey;bundle-version="0.2.0",
  info.elexis.server.core;bundle-version="1.0.0",
  com.eclipsesource.jaxrs.jersey-min;visibility:=reexport,
- javax.servlet;visibility:=reexport,
  info.elexis.server.core.common;visibility:=reexport,
- org.thymeleaf;bundle-version="3.0.1";visibility:=reexport
+ javax.servlet;bundle-version="2.4.0";visibility:=reexport
 Import-Package: ch.elexis.core.status,
  info.elexis.server.core.common.util,
  javax.annotation.security;version="1.2.0",
@@ -27,20 +26,19 @@ Import-Package: ch.elexis.core.status,
  org.apache.commons.codec.digest;version="1.9.0",
  org.eclipse.core.runtime;version="3.5.0",
  org.eclipse.equinox.http.servlet;version="1.2.0",
+ org.eclipse.jetty.server;version="9.3.9",
  org.glassfish.hk2.utilities.binding;version="2.4.0",
  org.osgi.service.component.annotations;version="1.2.0",
  org.slf4j;version="1.7.2",
  org.w3c.dom;version="3.0.0",
  org.xml.sax;version="2.0.2"
-Service-Component: OSGI-INF/info.elexis.server.core.web.security.internal.ShiroFilter.xml,
- OSGI-INF/info.elexis.server.core.web.security.internal.jaxrs.JaxRsServletConfiguration.xml,
- OSGI-INF/info.elexis.server.core.web.security.internal.jaxrs.JaxRsApplicationConfiguration.xml,
- OSGI-INF/info.elexis.server.core.web.security.internal.ShiroEnvironmentLoaderListener.xml,
+Jetty-WarFolderPath: web
+Web-ContextPath: /web
+Service-Component: OSGI-INF/info.elexis.server.core.web.security.internal.jaxrs.JaxRsServletConfiguration.xml,
  OSGI-INF/info.elexis.server.core.web.internal.AdminInterfaceContributions.xml,
- OSGI-INF/info.elexis.server.core.web.rest.RootService.xml,
- OSGI-INF/info.elexis.server.core.web.internal.ElexisServerSerlvetContext.xml,
- OSGI-INF/info.elexis.server.core.web.internal.RootServlet.xml,
- OSGI-INF/info.elexis.server.core.web.internal.AssetsServlet.xml
+ OSGI-INF/info.elexis.server.core.web.rest.ServerPathService.xml,
+ OSGI-INF/info.elexis.server.core.web.rest.WebPathService.xml,
+ OSGI-INF/info.elexis.server.core.web.rest.UserService.xml
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: info.elexis.server.core.web.internal.Activator
 Bundle-ClassPath: .

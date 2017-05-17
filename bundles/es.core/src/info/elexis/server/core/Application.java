@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileSystemUtils;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.slf4j.Logger;
@@ -124,7 +125,7 @@ public class Application implements IApplication {
 		return startTime;
 	}
 
-	public static String getStatus() {
+	public static String getStatus() {		
 		long millis = new Date().getTime() - Application.getStarttime().getTime();
 
 		long days = TimeUnit.MILLISECONDS.toDays(millis);

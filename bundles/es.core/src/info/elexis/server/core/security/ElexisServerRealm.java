@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -70,22 +71,21 @@ public class ElexisServerRealm extends AuthorizingRealm {
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-		if (token.getPrincipal() != null) {
-
-			try {
-				for (ESAuthorizingRealm realm : realms.values()) {
+		try {
+			for (ESAuthorizingRealm realm : realms.values()) {
+				if (realm.supports(token)) {
 					AuthenticationInfo authenticationInfo = realm.doGetAuthenticationInfo(token);
 					if (authenticationInfo != null) {
 						return authenticationInfo;
 					}
 				}
-			} catch (AuthenticationException ae) {
-				log.warn("AuthenticationException", ae);
-				throw (ae);
 			}
-
-			log.warn("Invalid login attempt for userId [{}] no realm entry found.", token.getPrincipal());
+		} catch (AuthenticationException ae) {
+			log.warn("AuthenticationException", ae);
+			throw (ae);
 		}
+
+		log.warn("Invalid login attempt for userId [{}] no realm entry found.", token.getPrincipal());
 
 		return null;
 	}
@@ -104,7 +104,7 @@ public class ElexisServerRealm extends AuthorizingRealm {
 				if (ar != null) {
 					boolean result = ar.getCredentialsMatcher().doCredentialsMatch(token, info);
 					if (!result) {
-						log.warn("Invalid login attempt by userId [{}] in realm [{}]", token.getPrincipal(),
+						log.warn("Invalid login attempt by userId or token [{}] in realm [{}]", token.getPrincipal(),
 								ar.getName());
 					}
 					return result;
@@ -116,4 +116,9 @@ public class ElexisServerRealm extends AuthorizingRealm {
 			return false;
 		}
 	};
+
+	@Override
+	public boolean supports(AuthenticationToken token) {
+		return (token instanceof UsernamePasswordToken || token instanceof ApiKeyAuthenticationToken);
+	}
 }

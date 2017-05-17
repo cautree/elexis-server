@@ -11,6 +11,11 @@ public class ElexisServerDefaultWebSessionManager implements WebSessionManager {
 
 	private static DefaultWebSessionManager dwsm = new DefaultWebSessionManager();
 	
+	public ElexisServerDefaultWebSessionManager() {
+		// we have to hand out cookies that are valid for the entire server
+		dwsm.getSessionIdCookie().setPath("/");
+	}
+	
 	@Override
 	public Session start(SessionContext context) {
 		return dwsm.start(context);

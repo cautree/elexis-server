@@ -26,6 +26,7 @@ import ch.rgw.tools.PasswordEncryptionService;
 import info.elexis.server.core.common.security.ESAuthorizingRealm;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.User;
 import info.elexis.server.core.connector.elexis.services.UserService;
+import info.elexis.server.core.security.ApiKeyAuthenticationToken;
 
 /**
  * Realm to authenticate and authorize against an Elexis >=3.2 database.
@@ -48,41 +49,69 @@ public class ElexisConnectorAuthorizingRealm extends AuthorizingRealm implements
 
 		@Override
 		public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
-			UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 			SimpleAuthenticationInfo sai = (SimpleAuthenticationInfo) info;
+			
+			if(token instanceof UsernamePasswordToken) {
+				UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 
-			try {
-				// 5811
-				String attemptedPassword = new String(upToken.getPassword());
-				String credentials = sai.getCredentials().toString();
-				String salt = new String(sai.getCredentialsSalt().getBytes());
-				return pes.authenticate(attemptedPassword, credentials, salt);
-			} catch (NoSuchAlgorithmException | InvalidKeySpecException | DecoderException e) {
-				log.warn("Error verifying password for user [{}].", e);
+				try {
+					// 5811
+					String attemptedPassword = new String(upToken.getPassword());
+					String credentials = sai.getCredentials().toString();
+					String salt = new String(sai.getCredentialsSalt().getBytes());
+					return pes.authenticate(attemptedPassword, credentials, salt);
+				} catch (NoSuchAlgorithmException | InvalidKeySpecException | DecoderException e) {
+					log.warn("Error verifying password for user [{}].", e);
+				}
+			} else if (token instanceof ApiKeyAuthenticationToken) {
+				// we loaded the user by its provided apiKey, so the fact
+				// that a principal is available proves the key
+				return sai.getPrincipals() != null;
 			}
+
 			return false;
 		}
 	};
 
 	@Override
 	public AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-		String userid = upToken.getUsername();
-		if (userid == null || userid.length() == 0) {
-			return null;
+
+		Optional<User> userOptional = Optional.empty();
+		boolean validUser = false;
+
+		if (token instanceof UsernamePasswordToken) {
+			UsernamePasswordToken upToken = (UsernamePasswordToken) token;
+			String userid = upToken.getUsername();
+			if (userid == null || userid.length() == 0) {
+				return null;
+			}
+
+			userOptional = UserService.load(userid);
+			if (userOptional.isPresent()) {
+				validUser = (userid.equals(userOptional.get().getId()));
+				if (!validUser) {
+					log.info("userid does not match [{}] : [{}]", userid, userOptional.get().getId());
+				}
+			}
+
+		} else if (token instanceof ApiKeyAuthenticationToken) {
+			String apiKey = (String) ((ApiKeyAuthenticationToken) token).getCredentials();
+			if (apiKey == null || apiKey.length() == 0) {
+				return null;
+			}
+
+			userOptional = UserService.findByApiKey(apiKey, false);
+
 		}
 
-		Optional<User> userOptional = UserService.load(userid);
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
-			if (userid.equals(user.getId())) {
-				String hashedPassword = user.getHashedPassword();
-				String salt = user.getSalt();
-				SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userid, hashedPassword,
-						REALM_NAME);
-				authenticationInfo.setCredentialsSalt(new SimpleByteSource(salt));
-				return authenticationInfo;
-			}
+			String hashedPassword = user.getHashedPassword();
+			String salt = user.getSalt();
+			SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user.getId(), hashedPassword,
+					REALM_NAME);
+			authenticationInfo.setCredentialsSalt(new SimpleByteSource(salt));
+			return authenticationInfo;
 		}
 
 		return null;
@@ -100,5 +129,10 @@ public class ElexisConnectorAuthorizingRealm extends AuthorizingRealm implements
 			info.setRoles(roles);
 		}
 		return info;
+	}
+	
+	@Override
+	public boolean supports(AuthenticationToken token) {
+		return (token instanceof UsernamePasswordToken || token instanceof ApiKeyAuthenticationToken);
 	}
 }

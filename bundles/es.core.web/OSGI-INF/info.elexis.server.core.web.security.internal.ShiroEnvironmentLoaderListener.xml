@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="info.elexis.server.core.web.security.internal.ShiroEnvironmentLoaderListener">
-   <property name="osgi.http.whiteboard.listener" value="true"/>
-   <property name="osgi.http.whiteboard.context.select" value="(osgi.http.whiteboard.context.name=es)"/>
-   <service>
-      <provide interface="javax.servlet.ServletContextListener"/>
-   </service>
-   <implementation class="info.elexis.server.core.web.security.internal.ShiroEnvironmentLoaderListener"/>
-</scr:component>

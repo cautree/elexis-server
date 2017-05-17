@@ -23,8 +23,6 @@ public class AdminInterfaceContributions {
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	public synchronized void bind(IAdminInterfaceContribution contribution) {
 		contributions.add(contribution);
-
-		TLTemplateEngine.INSTANCE.addTemplateResolver(contribution.getTemplateResolver());
 	}
 
 	public synchronized void unbind(IAdminInterfaceContribution contribution) {
