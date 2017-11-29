@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.eclipse.core.runtime.IStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,10 +23,7 @@ import ch.elexis.core.types.Gender;
 import ch.rgw.tools.Money;
 import ch.rgw.tools.TimeTool;
 import info.elexis.server.core.connector.elexis.billable.optifier.TarmedOptifier;
-import info.elexis.server.core.connector.elexis.internal.ElexisEntityManager;
-import info.elexis.server.core.connector.elexis.internal.EventService;
 import info.elexis.server.core.connector.elexis.jpa.ElexisTypeMap;
-import info.elexis.server.core.connector.elexis.jpa.model.annotated.AbstractDBObjectIdDeleted;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.Behandlung;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.Diagnosis;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.Fall;
@@ -36,18 +31,16 @@ import info.elexis.server.core.connector.elexis.jpa.model.annotated.Kontakt;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.Kontakt_;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.TarmedLeistung;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.TarmedLeistung.MandantType;
-import info.elexis.server.core.connector.elexis.jpa.model.annotated.VKPreis;
 import info.elexis.server.core.connector.elexis.jpa.model.annotated.Verrechnet;
 import info.elexis.server.core.connector.elexis.services.BehandlungService;
 import info.elexis.server.core.connector.elexis.services.ConfigService;
 import info.elexis.server.core.connector.elexis.services.FallService;
 import info.elexis.server.core.connector.elexis.services.JPAQuery;
+import info.elexis.server.core.connector.elexis.services.JPAQuery.QUERY;
 import info.elexis.server.core.connector.elexis.services.KontaktService;
-import info.elexis.server.core.connector.elexis.services.PersistenceService;
 import info.elexis.server.core.connector.elexis.services.TarmedLeistungService;
 import info.elexis.server.core.connector.elexis.services.VerrechnetService;
 import info.elexis.server.core.connector.elexis.services.util.MultiplikatorList;
-import info.elexis.server.core.connector.elexis.services.JPAQuery.QUERY;
 
 public class TarmedOptifierTest {
 
@@ -322,7 +315,7 @@ public class TarmedOptifierTest {
 
 		assertEquals(47, VerrechnetService.getVerrechnetForBehandlung(konsGriss, tlGroupLimit1).get().getZahl());
 		assertEquals(1, VerrechnetService.getVerrechnetForBehandlung(konsGriss, tlGroupLimit2).get().getZahl());
-	
+
 		result = BehandlungService.chargeBillableOnBehandlung(konsGriss, tlGroupLimit2);
 		assertFalse(result.getMessage(), result.isOK());
 
