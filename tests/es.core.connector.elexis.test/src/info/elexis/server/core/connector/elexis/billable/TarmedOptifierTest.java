@@ -238,6 +238,7 @@ public class TarmedOptifierTest {
 		resultSter = optifier.add(additionalService, konsSter);
 		assertTrue(resultSter.isOK());
 		assertTrue(getVerrechnet(konsSter, additionalService).isPresent());
+		assertEquals(1, VerrechnetService.getVerrechnetForBehandlung(konsSter, additionalService).get().getZahl());
 
 		// another additional, not allowed
 		resultSter = optifier.add(additionalService, konsSter);
@@ -249,17 +250,20 @@ public class TarmedOptifierTest {
 		assertTrue(verrechnet.isPresent());
 		IStatus result = optifier.remove(verrechnet.get());
 		assertTrue(result.isOK());
+		assertFalse(VerrechnetService.getVerrechnetForBehandlung(konsSter, additionalService).isPresent());
 		resultSter = optifier.add(additionalService, konsSter);
 		assertTrue(resultSter.isOK());
+		assertEquals(1, VerrechnetService.getVerrechnetForBehandlung(konsSter, additionalService).get().getZahl());
+		
 		// add another main and additional
 		resultSter = optifier.add(mainService, konsSter);
-		assertEquals(2, VerrechnetService.getVerrechnetForBehandlung(konsSter, mainService).get().getZahl());
 		assertTrue(resultSter.isOK());
 		assertTrue(getVerrechnet(konsSter, mainService).isPresent());
-
+		assertEquals(2, VerrechnetService.getVerrechnetForBehandlung(konsSter, mainService).get().getZahl());
 		resultSter = optifier.add(additionalService, konsSter);
 		assertTrue(resultSter.getMessage(), resultSter.isOK());
 		assertTrue(getVerrechnet(konsSter, additionalService).isPresent());
+		assertEquals(2, VerrechnetService.getVerrechnetForBehandlung(konsSter, additionalService).get().getZahl());
 
 		// remove main service, should also remove additional service
 		verrechnet = getVerrechnet(konsSter, mainService);
